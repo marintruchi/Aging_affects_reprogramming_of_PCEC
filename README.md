@@ -41,7 +41,7 @@ The goal of this repository is to gather materials used for i) the preprocessing
 |`Fig5_scRNAseq_IPF_Habermann.R`|R script to produce the plots of Figure 5 |
 |`Fig6_SupplFigS6_scRNAseq_RNAvelocity.R`|R script to produce the plots of Figure 6 and Suppl. Figure S6 |
 |`scVelo_gCap_Yd14.ipynb`|Jupyter python notebook to perform the scVelo analysis on the gCap subset from young D14 sample |
-|`scVelo_gCap_Yd14.ipynb`|Jupyter python notebook to perform the scVelo analysis on the gCap subset from old D28 sample |
+|`scVelo_gCap_Od28.ipynb`|Jupyter python notebook to perform the scVelo analysis on the gCap subset from old D28 sample |
 
 
 
