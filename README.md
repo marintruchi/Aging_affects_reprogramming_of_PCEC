@@ -34,12 +34,11 @@ The goal of this repository is to gather materials used for i) the preprocessing
 |`prerequisites.R`|R script to load required packages and functions |
 |`scRNAseq_preprocessing.R`|R script to preprocess the scRNA-seq data of each time point |
 |`scRNAseq_RPCA_integration.R`|R script to integrate all samples in a single seurat object |
-|`Fig1_SupplFigS1_Visium_data.R`|R script to produce the plots of Figure 1 and Suppl. Figure S1 |
-|`Fig2_scRNAseq_dataset_overview.R`|R script to produce the plots of Figure 2 |
-|`Fig3_SupplFigS2&3_scRNAseq_Focus_PCEC.R`|R script to produce the plots of Figure 3 and Suppl. Figure S2&3 |
-|`Fig4_SupplFigS4_scRNAseq_OldvsYoung.R`|R script to produce the plots of Figure 4 and Suppl. Figure S4 |
-|`Fig5_scRNAseq_IPF_Habermann.R`|R script to produce the plots of Figure 5 |
-|`Fig6_SupplFigS6_scRNAseq_RNAvelocity.R`|R script to produce the plots of Figure 6 and Suppl. Figure S6 |
+|`Fig1_SupplFigS1.R`|R script to produce the plots of Figure 1 and Suppl. Figure S1 |
+|`Fig2_SupplFigS2&S3.R`|R script to produce the plots of Figure 2 and Suppl. Figure S2&3 |
+|`Fig3_SupplFigS4&S5.R`|R script to produce the plots of Figure 3 and Suppl. Figure S4&5 |
+|`Fig4&5_SupplFigS6.R`|R script to produce the plots of Figure 4&5 and Suppl. Figure S6 |
+|`Fig6_SupplFigS7.R`|R script to produce the plots of Figure 6 and Suppl. Figure S7 |
 |`scVelo_gCap_Yd14.ipynb`|Jupyter python notebook to perform the scVelo analysis on the gCap subset from young D14 sample |
 |`scVelo_gCap_Od28.ipynb`|Jupyter python notebook to perform the scVelo analysis on the gCap subset from old D28 sample |
 
