@@ -122,7 +122,7 @@ DEG.psdblk.PVEC.mice <- DEG.psdblk.PVEC.mice %>% filter(padj<0.05)
 
 
 #For Arterial EC
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 aggr <-subset(x = aggr, subset = cellstate %in% c("Arterial EC")& group %ni% c("D60"))
 Idents(aggr) <- "RNA"
 aggr$samples <- aggr$mice
@@ -147,7 +147,7 @@ DEG.psdblk.ArterialEC.mice <- DEG.psdblk.ArterialEC.mice %>% filter(padj<0.05)
 
 # Enrichment analysis outputs from IPA
 # Upstream Regulators
-UR <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/IPA_UR_EC.xlsx")
+UR <- read.xlsx("~/IPA_UR_EC.xlsx")
 UR.order <- c("SPEN","MYC","CEBPB","EZH2","HIF1A","NFkB","STAT6","SMAD3",
               "NKX2-3","YAP1","SOX4","FOXM1","NFKBIA",
               "NFE2L2","SOX1","EPAS1","GATA6","FOXO1","KLF2")
@@ -163,7 +163,7 @@ ggplot(UR, aes(y=cellstate, x = TF, color = zscore, size = pval)) +
   ylab('') + xlab('')
 
 # Canonical pathways
-CP <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/IPA_CP_EC.xlsx")
+CP <- read.xlsx("~/IPA_CP_EC.xlsx")
 CP.order <- rev(c("Extracellular matrix organization","TGF-β Signaling","Pulmonary Fibrosis Idiopathic Signaling Pathway",
                   "Activin Inhibin Signaling Pathway","Gap Junction Signaling","Ephrin Receptor Signaling","Smooth Muscle Contraction","RHO GTPase cycle","STAT3 Pathway","Signaling by VEGF",
                   "FAK Signaling","Beta-catenin independent WNT signaling","Interferon gamma signaling"))
@@ -180,7 +180,7 @@ ggplot(CP, aes(x=cellstate, y = CP, color = zscore, size = pval)) +
 
 
 # Diseases and Molecular Functions
-DF <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/IPA_DF_EC.xlsx")
+DF <- read.xlsx("~/IPA_DF_EC.xlsx")
 DF.order <- rev(c("Sprouting","Branching of cells","Cell movement","Migration of cells","Fibrogenesis","Formation of cellular protrusions",
                   "Cell death of endothelial cells","Microtubule dynamics","Organization of cytoskeleton","Cell survival"))
 
@@ -702,7 +702,7 @@ library(DESeq2)
 genelist <- c("Fgfr1","Fgfr3","Sdc4","Flt1","Kdr","Nrp1","Nrp2","Il1r1","Acvrl1","Tgfbr2","Tgfbr3","Scarb1","Itgb1","Itga5","Bmpr2","Ackr3","Plxnd1","Tnfrsf1a","Ltbr","Amfr","Tnfrsf11b")
 deg_receptors <- read.xlsx("~/Supplementary_table_S3.xlsx") %>% filter(celltype %in% c("gCap","aCap","Venous EC")  & gene%in%genelist & baseMean > 3)
 
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 aggr <-subset(x = aggr, subset = cellstate %in% c("Lrg1+ aCap", "aCap","Lrg1+ gCap", "gCap","PV EC") & group %ni% c("D60"))
 Idents(aggr) <- "RNA"
 aggr$samples <- aggr$mice
@@ -760,7 +760,7 @@ for (gene in genes) {
 
 # Compare PCEC signatures induced by bleomycin or by IPF
 
-SUB <- readRDS("/data/truchi_data/Rdata_objects/Habermann_EC.rds")
+SUB <- readRDS("~/Habermann_EC.rds")
 SUB$samples <- paste0(SUB$Diagnosis,".",SUB$Sample_Name )
 SUB <- subset(SUB,subset=samples %in% c("Control.THD0002","Control.THD0005","Control.VUHD65","Control.VUHD67","Control.VUHD68","Control.VUHD70",
                                         "IPF.TILD006","IPF.TILD015","IPF.TILD028","IPF.VUILD59","IPF.VUILD60","IPF.VUILD61","IPF.VUILD63"))
@@ -855,7 +855,7 @@ write.xlsx(list("aCap"=DEG.psdblk.aCap,"gCap"=DEG.psdblk.gCap,"sCap"=DEG.psdblk.
 
 library(nichenetr)
 # To compare PCEC signatures induced by bleomycin or by IPF, load differential expression tables obtained for Lrg1+PCEC
-DEG.psdblk.sCap <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/Supplementary_table_S4.xlsx",sheet = "sCap")
+DEG.psdblk.sCap <- read.xlsx("~/Supplementary_table_S4.xlsx",sheet = "sCap")
 sCap_IPF_1 <- DEG.psdblk.sCap %>% filter(padj < 0.05) %>% pull(gene) 
 sCap_Bleo_1 <- read.xlsx("sCap_pseudobulk.xlsx") %>% filter(padj < 0.05) %>% pull(gene) %>% convert_mouse_to_human_symbols() 
 sCap_Bleo_1 <- sCap_Bleo_1[complete.cases(sCap_Bleo_1)]
@@ -902,7 +902,7 @@ sCap_Bleo <- data.frame(gene=convert_mouse_to_human_symbols(sCap_Bleo$gene),sCap
 sCap <- merge(sCap_Bleo,sCap_IPF)%>% filter(gene%in%top_genes)
 
 
-DEG.psdblk.SVEC <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/Supplementary_table_S4.xlsx",sheet = "SVEC")
+DEG.psdblk.SVEC <- read.xlsx("~/Supplementary_table_S4.xlsx",sheet = "SVEC")
 SVEC_IPF_1 <- DEG.psdblk.SVEC %>% filter(padj < 0.05) %>% pull(gene) 
 SVEC_Bleo_1 <- read.xlsx("SVEC_pseudobulk.xlsx") %>% filter(padj < 0.05) %>% pull(gene) %>% convert_mouse_to_human_symbols() 
 SVEC_Bleo_1 <- SVEC_Bleo_1[complete.cases(SVEC_Bleo_1)]
@@ -932,7 +932,7 @@ SVEC_Bleo <- data.frame(gene=convert_mouse_to_human_symbols(SVEC_Bleo$gene),SVEC
 SVEC <- merge(SVEC_Bleo,SVEC_IPF)%>% filter(gene%in%top_genes)
 
 
-DEG.psdblk.PVEC <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/Supplementary_table_S4.xlsx",sheet = "PVEC")
+DEG.psdblk.PVEC <- read.xlsx("~/Supplementary_table_S4.xlsx",sheet = "PVEC")
 PVEC_IPF_1 <- DEG.psdblk.PVEC %>% filter(padj < 0.05) %>% pull(gene) 
 PVEC_Bleo_1 <- read.xlsx("PVEC_pseudobulk.xlsx") %>% filter(padj < 0.05) %>% pull(gene) %>% convert_mouse_to_human_symbols() 
 PVEC_Bleo_1 <- PVEC_Bleo_1[complete.cases(PVEC_Bleo_1)]
@@ -962,7 +962,7 @@ PVEC_Bleo <- data.frame(gene=convert_mouse_to_human_symbols(PVEC_Bleo$gene),PVEC
 PVEC <- merge(PVEC_Bleo,PVEC_IPF)%>% filter(gene%in%top_genes)
 
 
-DEG.psdblk.gCap <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/Supplementary_table_S4.xlsx",sheet = "gCap")
+DEG.psdblk.gCap <- read.xlsx("~/Supplementary_table_S4.xlsx",sheet = "gCap")
 gCap_IPF_1 <- DEG.psdblk.gCap %>% filter(padj < 0.05) %>% pull(gene) 
 gCap_Bleo_1 <- read.xlsx("Lrg1pos_gCap_pseudobulk.xlsx") %>% filter(padj < 0.05) %>% pull(gene) %>% convert_mouse_to_human_symbols() 
 gCap_Bleo_1 <- gCap_Bleo_1[complete.cases(gCap_Bleo_1)]
@@ -991,7 +991,7 @@ gCap_Bleo <- read.xlsx("Lrg1pos_gCap_pseudobulk.xlsx") %>% mutate(Bleo=log2FoldC
 gCap_Bleo <- data.frame(gene=convert_mouse_to_human_symbols(gCap_Bleo$gene),gCap_Bleo=gCap_Bleo$Bleo) 
 gCap <- merge(gCap_Bleo,gCap_IPF)%>% filter(gene%in%top_genes)
 
-DEG.psdblk.aCap <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/Supplementary_table_S4.xlsx",sheet = "aCap")
+DEG.psdblk.aCap <- read.xlsx("~/Supplementary_table_S4.xlsx",sheet = "aCap")
 aCap_IPF_1 <- DEG.psdblk.aCap %>% filter(padj < 0.05) %>% pull(gene) 
 aCap_Bleo_1 <- read.xlsx("Lrg1pos_aCap_pseudobulk.xlsx") %>% filter(padj < 0.05) %>% pull(gene) %>% convert_mouse_to_human_symbols() 
 aCap_Bleo_1 <- aCap_Bleo_1[complete.cases(aCap_Bleo_1)]
@@ -1057,6 +1057,6 @@ sCap <- merge(sCap,G_list,by.x="gene")
 sCap$description <- gsub("\\[Source.*","",sCap$description)
 sCap$expression_in_fibrosis <- ifelse(sCap$sCap_Bleo>0,"upregulated","downregulated")
 sCap <- sCap %>%  dplyr::select(gene,description,expression_in_fibrosis)
-write.xlsx(unique(sCap),file = "/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/table2.xlsx")
+write.xlsx(unique(sCap),file = "~/table2.xlsx")
 
 
