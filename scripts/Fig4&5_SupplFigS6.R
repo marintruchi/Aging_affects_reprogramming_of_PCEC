@@ -3,12 +3,12 @@
 # Author : Marin Truchi
 
 #Load required packages and functions
-source("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/FINAL_scripts&figs/prerequisites.R")
+source("~/prerequisites.R")
 
 
 #Loading dataset
 #For convenience, load directly the seurat object obtained after the processing and integration steps
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 group_order <- c("PBS","D14","D28","D60")
 
 #Colors for plots
@@ -88,13 +88,13 @@ write.xlsx(list("young"=Reduce(rbind,young_DA_2),"old"=Reduce(rbind,old_DA_2)),f
 
 # BLM-induced signature score based on differentially expressed genes between Bleo and PBS
 library(DESeq2)
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 aggr$samples <- aggr$mice
 Idents(aggr) <- "RNA"
 
 SUB <-subset(x = aggr, subset = cellstate %in% c("Lrg1+ aCap","Lrg1+ gCap","aCap","gCap") & group %ni% c("D60"))
 
-DEG.psdblk.gCap.mice <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/Lrg1pos_gCap_pseudobulk.xlsx")
+DEG.psdblk.gCap.mice <- read.xlsx("~/Lrg1pos_gCap_pseudobulk.xlsx")
 DEG.psdblk.gCap.mice <- DEG.psdblk.gCap.mice %>% filter(padj<0.05 & log2FoldChange > 0.5 & baseMean > 10)
 
 DefaultAssay(aggr) <- "RNA"
@@ -145,6 +145,7 @@ write.xlsx(bleo_gcap,"score_gCap.xlsx")
 
 
 #Supplementary heatmap of bleomycin-induced markers in gCap 
+DEG.psdblk.gCap.mice <- read.xlsx("~/Supplementary_table_S3.xlsx",sheet="gCap")
 DEG.psdblk.gCap.mice <- DEG.psdblk.gCap.mice %>% top_n(50,-log10(padj))
 data <- data.frame(counts(dds, normalized=TRUE))[DEG.psdblk.gCap.mice$gene,]  %>% as.data.frame()  
 names <- gsub("gCap_","",colnames(data))
@@ -170,10 +171,10 @@ dds <- DESeqDataSetFromMatrix(countData = cts,colData = colData,design = ~ condi
 dds <- dds[rowSums(counts(dds)) >=10,]
 dds <- DESeq(dds)
 resultsNames(dds)
-DEG.psdblk.aCap.mice <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/Lrg1pos_aCap_pseudobulk.xlsx")
+DEG.psdblk.aCap.mice <- read.xlsx("~/Supplementary_table_S3.xlsx",sheet="aCap")
 DEG.psdblk.aCap.mice <- DEG.psdblk.aCap.mice %>% filter(padj<0.05 & log2FoldChange > 0.5 & baseMean > 5)
 
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 SUB <- subset(x = aggr, subset = cellstate %in% c("Lrg1+ aCap","aCap"))
 SUB <- SUB %>%  NormalizeData() %>% ScaleData()
 SUB <- AddModuleScore(SUB,features = list(DEG.psdblk.aCap.mice  %>% pull(gene)),name="aCap_bleo")
@@ -222,7 +223,7 @@ pheatmap(t(data),annotation_row = annotation,annotation_colors = annot.cols,clus
 
 
 #For sCap (merge sCap and PVEC from PBS to have enough cells for pseudobulks)
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 sCap <-subset(x = aggr, subset = cellstate %in% c("sCap") & group %ni% c("PBS"))
 gCap <-subset(x = aggr, subset = cellstate %in% c("gCap") & group %in% c("PBS"))
 aggr <- merge(sCap,gCap)
@@ -231,7 +232,7 @@ aggr$samples <- aggr$mice
 cts <- AggregateExpression(aggr,group.by = c("samples"),return.seurat = F,assays = "RNA",slot = "counts")
 cts <- cts$RNA %>% as.data.frame()
 
-DEG.psdblk.sCap.mice <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/sCap_pseudobulk.xlsx")
+DEG.psdblk.sCap.mice <- read.xlsx("~/Supplementary_table_S3.xlsx",sheet="sCap")
 DEG.psdblk.sCap.mice <- DEG.psdblk.sCap.mice %>% filter(padj<0.05 & log2FoldChange > 0.5 & baseMean > 5)
 
 colData <- data.frame(samples = colnames(cts)) %>% mutate(condition = ifelse(grepl('PBS', samples), 'PBS', 'Bleo')) %>% column_to_rownames(var = 'samples')
@@ -240,7 +241,7 @@ dds <- DESeqDataSetFromMatrix(countData = cts,colData = colData,design = ~ condi
 dds <- dds[rowSums(counts(dds)) >=10,]
 dds <- DESeq(dds,test="Wald")
 
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 SUB <- subset(x = aggr, subset = cellstate %in% c("sCap"))
 SUB <- SUB %>%  NormalizeData() %>% ScaleData()
 SUB <- AddModuleScore(SUB,features = list(DEG.psdblk.sCap.mice  %>% pull(gene)),name="sCap_bleo")
@@ -290,7 +291,7 @@ pheatmap(t(data),annotation_row = annotation,annotation_colors = annot.cols,clus
 
 
 # For SVEC (merge SVEC and PVEC from PBS to have enough cells for pseudobulks)
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 SVEC <-subset(x = aggr, subset = cellstate %in% c("SVEC") & group %ni% c("PBS"))
 PVEC <-subset(x = aggr, subset = cellstate %in% c("PVEC") & group %in% c("PBS"))
 aggr <- merge(SVEC,PVEC)
@@ -299,7 +300,7 @@ aggr$samples <- aggr$mice
 cts <- AggregateExpression(aggr,group.by = c("samples"),return.seurat = F,assays = "RNA",slot = "counts")
 cts <- cts$RNA %>% as.data.frame()
 
-DEG.psdblk.SVEC.mice <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/SVEC_pseudobulk.xlsx")
+DEG.psdblk.SVEC.mice <- read.xlsx("~/Supplementary_table_S3.xlsx",sheet="SV EC")
 DEG.psdblk.SVEC.mice <- DEG.psdblk.SVEC.mice %>% filter(padj<0.05 & log2FoldChange > 0.5 & baseMean > 1)
 
 colData <- data.frame(samples = colnames(cts)) %>% mutate(condition = ifelse(grepl('PBS', samples), 'PBS', 'Bleo')) %>% column_to_rownames(var = 'samples')
@@ -308,7 +309,7 @@ dds <- DESeqDataSetFromMatrix(countData = cts,colData = colData,design = ~ condi
 dds <- dds[rowSums(counts(dds)) >=10,]
 dds <- DESeq(dds,test="Wald")
 
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 SUB <- subset(x = aggr, subset = cellstate %in% c("SV EC"))
 SUB <- SUB %>%  NormalizeData() %>% ScaleData()
 SUB <- AddModuleScore(SUB,features = list(DEG.psdblk.SVEC.mice  %>% pull(gene)),name="SVEC_bleo")
@@ -365,7 +366,7 @@ aggr$samples <- aggr$mice
 cts <- AggregateExpression(aggr,group.by = c("samples"),return.seurat = F,assays = "RNA",slot = "counts")
 cts <- cts$RNA %>% as.data.frame()
 
-DEG.psdblk.PVEC.mice <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/PVEC_pseudobulk.xlsx")
+DEG.psdblk.PVEC.mice <- read.xlsx("~/Supplementary_table_S3.xlsx",sheet="PV EC")
 DEG.psdblk.PVEC.mice <- DEG.psdblk.PVEC.mice %>% filter(padj<0.05 & log2FoldChange > 0.5 & baseMean > 5)
 
 colData <- data.frame(samples = colnames(cts)) %>% mutate(condition = ifelse(grepl('PBS', samples), 'PBS', 'Bleo')) %>% column_to_rownames(var = 'samples')
@@ -374,7 +375,7 @@ dds <- DESeqDataSetFromMatrix(countData = cts,colData = colData,design = ~ condi
 dds <- dds[rowSums(counts(dds)) >=10,]
 dds <- DESeq(dds,test="Wald")
 
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 SUB <- subset(x = aggr, subset = cellstate %in% c("PV EC"))
 SUB <- SUB %>%  NormalizeData() %>% ScaleData()
 SUB <- AddModuleScore(SUB,features = list(DEG.psdblk.PVEC.mice  %>% pull(gene)),name="PVEC_bleo")
@@ -430,7 +431,7 @@ table <- write.xlsx(list("gcap"=gcap[["data"]],"acap"=acap[["data"]],"sCap"=sCap
 
 #Differential expression analysis between old and young aCap or gCap cells pseudobulks using DESeq2 in fibrotic condition 
 
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 aggr <-subset(x = aggr, subset = cellstate %in% c("Lrg1+ aCap","Lrg1+ gCap","aCap","gCap","PV EC") & group %ni% c("PBS","D60"))
 aggr$samples <- aggr$mice
 
@@ -493,7 +494,7 @@ DEG.psdblk.aCap.mice <- inner_join(DEG.psdblk.aCap.mice,counts) %>% filter(gene 
 # Create Supplementary_table_5 : Differential expression analysis (DESeq2) between old and young aCap or gCap cells in fibrotic condition
 write.xlsx(list("gCap"=DEG.psdblk.gCap.mice,"aCap"=DEG.psdblk.aCap.mice),file = "Supplementary_table_S5.xlsx")
 
-gene_list <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Last_figs/Supplementary_table_S5.xlsx",sheet="gCap")
+gene_list <- read.xlsx("~/Supplementary_table_S5.xlsx",sheet="gCap")
 
 upgene_Bleo <- gene_list %>% arrange(dplyr::desc(log2FoldChange)) %>% filter(log2FoldChange > 0.25 & padj<0.05)  %>% na.omit() %>% pull(gene)
 dwgene_Bleo <- arrange(gene_list, log2FoldChange) %>% filter(log2FoldChange < -0.25 & padj<0.05)  %>%  na.omit() %>% pull(gene)
@@ -546,7 +547,7 @@ df.list <- lapply(genes, function(gene) {
 
 # Differential expression analysis between old and young aCap or gCap cells pseudobulks using DESeq2 in physiological condition 
 
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 aggr <-subset(x = aggr, subset = cellstate %in% c("Lrg1+ aCap","Lrg1+ gCap","aCap","gCap","PV EC") & group %in% c("PBS"))
 aggr$samples <- aggr$mice
 
@@ -596,7 +597,7 @@ DEG.psdblk.aCap.mice <- inner_join(DEG.psdblk.aCap.mice,counts) %>% filter(gene 
 write.xlsx(list("gCap"=DEG.psdblk.gCap.mice,"aCap"=DEG.psdblk.aCap.mice,"PVEC"=DEG.psdblk.PVEC.mice),file = "Supplementary_table_S6.xlsx")
 
 
-gene_list <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Last_figs/Supplementary_table_S6.xlsx",sheet="gCap")
+gene_list <- read.xlsx("~/Supplementary_table_S6.xlsx",sheet="gCap")
 
 upgene_Bleo <- gene_list %>% arrange(dplyr::desc(log2FoldChange)) %>% filter(log2FoldChange > 0.25 & padj<0.05)  %>% na.omit() %>% pull(gene)
 dwgene_Bleo <- arrange(gene_list, log2FoldChange) %>% filter(log2FoldChange < -0.25 & padj<0.05)  %>%  na.omit() %>% pull(gene)
@@ -624,7 +625,7 @@ ggplot(gene_list, aes(x=log2FoldChange, y=-log10(padj))) +
 ggsave("Fig5D.pdf", width = 15, height = 12, units = c("cm"), dpi = 200)
 
 
-DEG_gCap <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Last_figs/Supplementary_table_S6.xlsx",sheet="gCap")
+DEG_gCap <- read.xlsx("~/Supplementary_table_S6.xlsx",sheet="gCap")
 genes <- c("Lrg1","Col15a1","Ntrk2","Aplnr","Vwf","Slc6a2","Prss23","Plat")
 
 # ---- Fig5E Boxplot ---- 
@@ -652,8 +653,8 @@ write.xlsx(Reduce(rbind,df.list),file = "Fig5E_data.xlsx")
 old.cp <- c("Th1 and Th2 Activation Pathway","Antigen Presentation Pathway","IL-10 Signaling","Integrin cell surface interactions","IL-4 Signaling","Collagen biosynthesis and modifying enzymes","Pulmonary Fibrosis Idiopathic Signaling Pathway","Platelet Adhesion to exposed collagen","Interferon gamma signaling","S100 Family Signaling Pathway","FGF Signaling","Extracellular matrix organization")
 young.cp <- c("Apelin Endothelial Signaling Pathway","CXCR4 Signaling","Thrombin Signaling")
 
-DF_UP <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/FINAL_scripts&figs/Pathways_IPA_OldvsYoung_TableS5.xlsx",sheet = "TableS5_UP")
-DF_DOWN <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/FINAL_scripts&figs/Pathways_IPA_OldvsYoung_TableS5.xlsx",sheet = "TableS5_Down")
+DF_UP <- read.xlsx("~/Pathways_IPA_OldvsYoung_TableS5.xlsx",sheet = "TableS5_UP")
+DF_DOWN <- read.xlsx("~/Pathways_IPA_OldvsYoung_TableS5.xlsx",sheet = "TableS5_Down")
 
 DF_UP <- data.frame("DF"=DF_UP$Ingenuity.Canonical.Pathways,pval=DF_UP$padj,score=DF_UP$`z-score`) %>% filter(DF%in%old.cp)
 DF_UP$pval <- round(as.numeric(DF_UP$pval),digits=2)
@@ -676,10 +677,10 @@ ggplot(data=DF_UP, aes(x=DF, y=pval, fill=group)) +
 
 
 # Commonly differentially expressed genes in Bleo vs PBS and Old vs Young PBS
-OldvsYoung.gCap.PBS_pos <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Last_figs/Supplementary_table_S6.xlsx",sheet="gCap")%>% filter(padj <0.05 & log2FoldChange>0)
-OldvsYoung.gCap.PBS_neg <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Last_figs/Supplementary_table_S6.xlsx",sheet="gCap")%>% filter(padj <0.05 & log2FoldChange<0)
-BleovsPBS.gCap_pos <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/FINAL_Figures/Supplementary_table_S3.xlsx") %>% filter(celltype=="gCap" & baseMean > 3 & log2FoldChange>0)
-BleovsPBS.gCap_neg <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/FINAL_Figures/Supplementary_table_S3.xlsx") %>% filter(celltype=="gCap" & baseMean > 3 & log2FoldChange<0)
+OldvsYoung.gCap.PBS_pos <- read.xlsx("~/Supplementary_table_S6.xlsx",sheet="gCap")%>% filter(padj <0.05 & log2FoldChange>0)
+OldvsYoung.gCap.PBS_neg <- read.xlsx("~/Supplementary_table_S6.xlsx",sheet="gCap")%>% filter(padj <0.05 & log2FoldChange<0)
+BleovsPBS.gCap_pos <- read.xlsx("~/Supplementary_table_S3.xlsx") %>% filter(celltype=="gCap" & baseMean > 3 & log2FoldChange>0)
+BleovsPBS.gCap_neg <- read.xlsx("~/Supplementary_table_S3.xlsx") %>% filter(celltype=="gCap" & baseMean > 3 & log2FoldChange<0)
 ggvenn(list("OldvsYoung.gCap.PBS_pos"=OldvsYoung.gCap.PBS_pos$gene,"BleovsPBS.gCap_pos"=BleovsPBS.gCap_pos$gene),fill_color = c(gg_color_hue(2)[1], gg_color_hue(2)[2]),stroke_size=0.4,text_size = 3)+ggtitle("")
 ggvenn(list("OldvsYoung.gCap.PBS_neg"=OldvsYoung.gCap.PBS_neg$gene,"BleovsPBS.gCap_neg"=BleovsPBS.gCap_neg$gene),fill_color = c(gg_color_hue(2)[1], gg_color_hue(2)[2]),stroke_size=0.4,text_size = 3)+ggtitle("")
 
@@ -689,8 +690,8 @@ genes_highlight <- c(intersect(OldvsYoung.gCap.PBS_pos$gene,BleovsPBS.gCap_pos$g
 
 test <- unique(c(OldvsYoung.gCap.PBS_pos$gene,OldvsYoung.gCap.PBS_neg$gene))
 
-OldvsYoung.gCap.PBS <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Last_figs/Supplementary_table_S6.xlsx",sheet="gCap") %>% mutate(OldvsYoung=log2FoldChange)  %>% dplyr::select(gene,OldvsYoung) 
-BleovsPBS.gCap <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/FINAL_Figures/Supplementary_table_S3.xlsx",sheet="gCap") %>% mutate(BleovsPBS=log2FoldChange)  %>% dplyr::select(gene,BleovsPBS)
+OldvsYoung.gCap.PBS <- read.xlsx("~/Supplementary_table_S6.xlsx",sheet="gCap") %>% mutate(OldvsYoung=log2FoldChange)  %>% dplyr::select(gene,OldvsYoung) 
+BleovsPBS.gCap <- read.xlsx("~/Supplementary_table_S3.xlsx",sheet="gCap") %>% mutate(BleovsPBS=log2FoldChange)  %>% dplyr::select(gene,BleovsPBS)
 a <- inner_join(OldvsYoung.gCap.PBS,BleovsPBS.gCap) %>% filter(gene%in%test)
 a$threshold = as.factor(ifelse(a$gene %ni% genes_highlight, 'not significant', 
                                ifelse(a$gene %in% intersect(OldvsYoung.gCap.PBS_neg$gene,BleovsPBS.gCap_neg$gene), 'down-regulated',
