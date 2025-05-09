@@ -352,7 +352,7 @@ Convert("Bleo_OD28_CECs_gCap_final.h5Seurat", dest = "h5ad",overwrite = T)
 
 #Young D14
 #Plot genes trends according to latent time in each subpopulation
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 subcolors <- c("sCap"="#A6D854","Lrg1+ gCap"="#fa3737","gCap"="#911414")
 
 YD14 <- subset(aggr,subset = cellstate %in% c("gCap","Lrg1+ gCap","sCap") & sample %in% c("Young_D14.Bleo","Young_D14.PBS"))
@@ -360,11 +360,11 @@ YD14 <- YD14 %>% NormalizeData() %>% ScaleData() %>% FindVariableFeatures() %>% 
 YD14 <- RunUMAP(YD14,dims = 1:30)
 DimPlot(YD14,label = T,group.by = "cellstate")
 
-t <- read.table("/data/truchi_data/DATA/CellRank/velo_important_genesper_cluster.tsv",sep = "\t",header = T,row.names = 1)
-velocyto_genes <- read.table("/data/truchi_data/DATA/CellRank/velo_important_genes.tsv",sep = "\t",header = T,row.names = 1) %>% slice_max(fit_likelihood,n=200) %>% dplyr::select(features,fit_likelihood)
+t <- read.table("~/velo_important_genesper_cluster.tsv",sep = "\t",header = T,row.names = 1)
+velocyto_genes <- read.table("~/velo_important_genes.tsv",sep = "\t",header = T,row.names = 1) %>% slice_max(fit_likelihood,n=200) %>% dplyr::select(features,fit_likelihood)
 velocyto_genes$features <- gsub("\\.","-",velocyto_genes$features)
 
-velo_metadata <- read.table("/data/truchi_data/DATA/CellRank/velo_metadata.tsv",sep = "\t",header = T) %>% mutate(barcode=X) %>% dplyr::select(X,barcode,latent_time) %>% column_to_rownames(.,"X")
+velo_metadata <- read.table("~/velo_metadata.tsv",sep = "\t",header = T) %>% mutate(barcode=X) %>% dplyr::select(X,barcode,latent_time) %>% column_to_rownames(.,"X")
 cells_D14 <- YD14@meta.data %>% dplyr::select(barcode,cellstate) %>% inner_join(velo_metadata) %>% arrange(latent_time) %>% mutate(rank = 1:nrow(.))
 
 
@@ -395,7 +395,7 @@ genes.to.plot <-c("Smad1","Sparc","Col4a1","Ndrg1","Igfbp7",
                   "Npr3","Hpgd","Clec1a","Bmp6","Itga1")
 
 
-velo_metadata <- read.table("/data/truchi_data/DATA/CellRank/velo_metadata.tsv",sep = "\t",header = T) %>% dplyr::select(X,latent_time) %>% column_to_rownames(.,"X")
+velo_metadata <- read.table("~/velo_metadata.tsv",sep = "\t",header = T) %>% dplyr::select(X,latent_time) %>% column_to_rownames(.,"X")
 genes_counts <- t(GetAssayData(YD14)[genes.to.plot,]) %>% data.frame()
 metadata <- merge(YD14@meta.data,genes_counts,by="row.names")%>% column_to_rownames(.,"Row.names")
 metadata <- merge(metadata,velo_metadata,by="row.names") %>% column_to_rownames(.,"Row.names")
@@ -411,7 +411,7 @@ for (gene in genes.to.plot) {
 
 #Old D28
 #Plot genes trends according to latent time in each subpopulation
-aggr <- readRDS(file = "/data/truchi_data/Rdata_objects/Truchi_et_al_seuratobj.rds")
+aggr <- readRDS(file = "~/Truchi_et_al_seuratobj.rds")
 subcolors <- c("sCap"="#A6D854","Lrg1+ gCap"="#fa3737","gCap"="#911414")
 
 OD28 <- subset(aggr,subset = cellstate %in% c("gCap","Lrg1+ gCap","sCap") & sample %in% c("Old_D28.Bleo","Old_D28.PBS"))
@@ -419,10 +419,10 @@ OD28 <- OD28 %>% NormalizeData() %>% ScaleData() %>% FindVariableFeatures() %>% 
 OD28 <- RunUMAP(OD28,dims = 1:30)
 DimPlot(OD28,label = T,group.by = "cellstate")
 
-velocyto_genes <- read.table("/data/truchi_data/DATA/CellRank/OD28_gCap_velo_important_genes.tsv",sep = "\t",header = T,row.names = 1) %>% slice_max(fit_likelihood,n=200) %>% dplyr::select(features,fit_likelihood)
+velocyto_genes <- read.table("~/OD28_gCap_velo_important_genes.tsv",sep = "\t",header = T,row.names = 1) %>% slice_max(fit_likelihood,n=200) %>% dplyr::select(features,fit_likelihood)
 velocyto_genes$features <- gsub("\\.","-",velocyto_genes$features)
 
-velo_metadata <- read.table("/data/truchi_data/DATA/CellRank/OD28_gCap_velo_metadata.tsv",sep = "\t",header = T) %>% mutate(barcode=X) %>% dplyr::select(X,barcode,latent_time) %>% column_to_rownames(.,"X")
+velo_metadata <- read.table("~/OD28_gCap_velo_metadata.tsv",sep = "\t",header = T) %>% mutate(barcode=X) %>% dplyr::select(X,barcode,latent_time) %>% column_to_rownames(.,"X")
 cells_D28 <- OD28@meta.data %>% dplyr::select(barcode,cellstate) %>% inner_join(velo_metadata) %>% arrange(latent_time) %>% mutate(rank = 1:nrow(.))
 
 # ---- Fig6D density of subpop along trajectory in OD28 ----
@@ -451,7 +451,7 @@ ggarrange(plotlist=plist,ncol = 5,nrow =3,common.legend = T,legend = "bottom",al
 
 
 # Represent IPA results based on the differential analysis run in both subsets
-IPA <- read.xlsx("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/Reviews_NatComm/IPA_Velocity.xlsx") %>% arrange(zscore)
+IPA <- read.xlsx("~/IPA_Velocity.xlsx") %>% arrange(zscore)
 IPA$UR <- factor(IPA$UR,levels = IPA$UR)
 
 # ---- SupplFigS7C IPA based on early vs late trajectory signatures ----
