@@ -356,7 +356,7 @@ sCP <- c("IL-17A Signaling in Fibroblasts",
 
 topics <- c(1:14)
 IPA_topics <- lapply(topics, function(topic) {
-  IPA <- read.xlsx("/home/truchi/Spatial/STdeconvolve/IPA_CP_topics_Visium.xlsx",sheet = topic) %>% filter(CP %in% sCP)
+  IPA <- read.xlsx("IPA_CP_topics_Visium.xlsx",sheet = topic) %>% filter(CP %in% sCP)
   IPA$zscore <- as.numeric(IPA$zscore)
   IPA$padj <- ifelse(IPA$padj > 10, 10, IPA$padj)
   IPA$padj <- ifelse(IPA$padj < -log10(0.05), NA, IPA$padj)
