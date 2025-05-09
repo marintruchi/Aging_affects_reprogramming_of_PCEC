@@ -3,7 +3,7 @@
 # Author : Marin Truchi
 
 #Load required packages and functions
-source("/home/truchi/LUNG_FIBROSIS/BLEO_Integrated_Analysis_FINAL/FINAL_scripts&figs/prerequisites.R")
+source("~/prerequisites.R")
 
 
 #Loading dataset
