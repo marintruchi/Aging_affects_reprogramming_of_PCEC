@@ -12,14 +12,7 @@ Marin Truchi*, Grégoire Savary*, Marine Gautier-Isola, Hugo Cadis, Alberto Baer
 
 The goal of this repository is to gather materials used for i) the preprocessing of scRNA-seq and spatial transcriptomics data, ii) the integration of scRNA-seq samples, iii) the figures of the manuscript. 
 
----
 
-<figure>
-  <img src="https://github.com/marintruchi/Aging_affects_reprogramming_of_PCEC/blob/main/graphical_abstract.PNG" alt="SSAE_overview"/>
-</figcaption>
-</figure>
-
----
 
 ## **Repository Contents**
 |Folder | Description |
